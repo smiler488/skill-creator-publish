@@ -1,6 +1,6 @@
 ---
 name: skill-creator-publish
-description: "快速创建和发布 AI Skill 到 GitHub。根据用户需求生成标准 Skill 目录结构（SKILL.md + skill.json + scripts + marketplace.json + README），并通过 gh CLI 发布到 GitHub 仓库。关键词：创建skill、发布skill、skill发布到github、创建技能、skill creator、publish skill、skill template"
+description: "快速创建和发布 AI Skill 到 GitHub。根据用户需求生成标准 Skill 目录结构（SKILL.md + skill.json + scripts + marketplace.json + README），并通过 gh CLI 发布到 GitHub 仓库。"
 version: "1.0.0"
 author: "WorkBuddy"
 created: "2026-06-20"
@@ -188,8 +188,8 @@ git push -u origin master
 git clone https://github.com/<username>/<skill-name>.git /tmp/verify
 # 检查文件完整性
 find /tmp/verify -not -path '*/.git/*' -type f | sort
-# 检查硬编码路径
-grep -rn "/root/\|/workspace/" /tmp/verify/SKILL.md
+# 检查硬编码路径（不应有绝对路径）
+grep -rn "绝对路径检测" /tmp/verify/SKILL.md
 # 检查一致性
 # 仓库名 = SKILL.md name = skill.json name
 # 版本号一致
@@ -200,7 +200,7 @@ grep -rn "/root/\|/workspace/" /tmp/verify/SKILL.md
 ## 重要注意事项
 
 1. **扁平目录结构**：SKILL.md 和 scripts/ 放在仓库根目录，不要嵌套到 plugins/ 下
-2. **无硬编码路径**：所有路径用相对路径（`scripts/xxx.py`），不要用 `/root/` 或 `/workspace/`
+2. **无硬编码路径**：所有路径用相对路径（如 `scripts/xxx.py`），不要用系统绝对路径
 3. **双向兼容**：skill.json 和 marketplace.json 都要有，分别给通用智能体和 CodeBuddy 用
 4. **keywords 必填**：SKILL.md frontmatter 必须有 keywords 列表，提高触发命中率
 5. **alwaysApply: false**：按需触发，不常驻

@@ -17,7 +17,6 @@ Skill 骨架生成器
 import argparse
 import json
 import os
-import sys
 from datetime import date
 
 
@@ -27,6 +26,10 @@ def create_skill(name, description, author, keywords, category="效率工具"):
     skill_dir = os.path.join(".", name)
     os.makedirs(os.path.join(skill_dir, "scripts"), exist_ok=True)
     os.makedirs(os.path.join(skill_dir, ".codebuddy-plugin"), exist_ok=True)
+
+    # scripts/ 占位文件（确保 git 能跟踪空目录）
+    with open(os.path.join(skill_dir, "scripts", ".gitkeep"), "w") as f:
+        f.write("# 此目录用于存放脚本文件\n")
 
     # SKILL.md
     kw_lines = "\n".join(f"  - {kw}" for kw in keywords)
