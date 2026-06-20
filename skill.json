@@ -1,0 +1,16 @@
+{
+  "name": "skill-creator-publish",
+  "display_name": "Skill 创建与发布工具",
+  "description": "快速创建标准 AI Skill 并发布到 GitHub。根据需求生成 SKILL.md + skill.json + scripts + marketplace.json + README，通过 gh CLI 发布。支持 CodeBuddy、Claude Code、Cursor 等主流智能体。",
+  "version": "1.0.0",
+  "author": "WorkBuddy",
+  "license": "MIT",
+  "repository": "https://github.com/smiler488/skill-creator-publish",
+  "category": "开发工具",
+  "keywords": [
+    "创建skill", "发布skill", "skill发布github", "创建技能",
+    "skill creator", "publish skill", "skill template", "skill模板",
+    "发布技能", "github skill", "codebuddy skill", "claude code skill",
+    "cursor skill"
+  ]
+}
