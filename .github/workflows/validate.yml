@@ -1,0 +1,16 @@
+name: validate
+on: [push, pull_request]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python .github/scripts/validate_skill.py
+      - name: generator smoke test
+        run: |
+          python scripts/create_skill.py -n demo-skill -d "Demo. Use when testing." -a Tester -u someone -o /tmp/gen
+          cd /tmp/gen/demo-skill && git init -q && git add -A && python $GITHUB_WORKSPACE/.github/scripts/validate_skill.py
+          ! python $GITHUB_WORKSPACE/scripts/create_skill.py -n Bad_Name -d x -o /tmp/gen

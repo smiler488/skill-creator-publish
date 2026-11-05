@@ -1,218 +1,89 @@
 ---
 name: skill-creator-publish
-description: "快速创建和发布 AI Skill 到 GitHub。根据用户需求生成标准 Skill 目录结构（SKILL.md + skill.json + scripts + marketplace.json + README），并通过 gh CLI 发布到 GitHub 仓库。"
-version: "1.0.0"
-author: "WorkBuddy"
-created: "2026-06-20"
-updated: "2026-06-20"
-alwaysApply: false
-keywords:
-  - 创建skill
-  - 发布skill
-  - skill发布github
-  - 创建技能
-  - skill creator
-  - publish skill
-  - skill template
-  - skill模板
-  - 发布技能
-  - github skill
-  - codebuddy skill
-  - claude code skill
-  - cursor skill
+description: 生成标准 Agent Skill 仓库骨架并发布到 GitHub。当用户说"帮我创建一个 skill""把这个做成技能""把 skill 发布到 GitHub"时使用。生成 SKILL.md、install.md（一句话安装）、README、skill.json、marketplace.json，用 gh CLI 建仓推送并验证。Create an Agent Skill repository skeleton and publish it to GitHub.
+license: MIT
+metadata:
+  author: Liangchao Deng (smiler488)
+  version: "1.1.0"
+  keywords: [创建skill, 发布skill, 创建技能, skill creator, publish skill, skill template]
 ---
 
-# Skill Creator & Publisher
+# Skill 创建与发布
 
-## 功能说明
+把用户的需求变成一个可以直接安装的 Agent Skill 仓库，并发布到 GitHub。发布后，用户只要对任何智能体说一句"请根据 …/install.md，安装 <名称>"就能装上。
 
-帮助用户快速创建标准 AI Skill 并发布到 GitHub，支持 CodeBuddy、Claude Code、Cursor、Cline、Windsurf 等主流智能体。
+## 何时使用
 
-| 功能 | 说明 |
-|------|------|
-| 🏗️ **创建 Skill 骨架** | 根据需求自动生成 SKILL.md + skill.json + scripts/ + marketplace.json + README |
-| 📤 **发布到 GitHub** | 用 gh CLI 创建仓库、提交代码、推送 |
-| ✅ **发布后验证** | clone 验证文件完整性、检查硬编码路径、检查一致性 |
-| 🔄 **跨平台兼容** | 扁平目录结构，所有智能体 clone 后直接可用 |
+| 用户说 | 做什么 |
+| --- | --- |
+| "帮我创建一个 skill / 技能，功能是…" | 第 1–3 步 |
+| "把这个 skill 发布到 GitHub" | 第 4–5 步 |
+| "创建并发布一个 skill" | 全部步骤 |
 
----
+## 工作流程
 
-## 触发场景
+### 1. 问清需求
 
-| 用户可能会说 | 执行操作 |
-|-------------|---------|
-| "帮我创建一个 skill" / "创建一个技能" | 生成 skill 骨架 |
-| "帮我发布 skill 到 GitHub" / "发布到仓库" | 创建 GitHub 仓库并推送 |
-| "帮我创建并发布一个 skill" | 创建 + 发布一条龙 |
+需要以下信息，缺哪项问哪项：
 
----
+- **名称**：小写字母、数字、连字符，例如 `pdf-merger`，同时作为仓库名和目录名；
+- **触发场景**：用户会怎么说、在什么情况下用。这会写进 `description`，是智能体判断要不要加载的唯一依据，不超过 1024 个字符；
+- **步骤和边界**：具体怎么做、哪些事不能做或要先确认；
+- **是否需要脚本**：纯指令型还是需要 `scripts/`；
+- **GitHub 账号**和作者名。
 
-## 工作流
-
-### 第一步：确认需求
-
-向用户了解以下信息：
-- **Skill 名称**：英文短名（如 `pdf-merger`、`data-cleaner`）
-- **功能描述**：这个 skill 做什么？
-- **关键词**：用户可能怎么说来触发？（列 5-10 个）
-- **是否需要脚本**：需要 Python 脚本还是纯指令型 skill？
-- **GitHub 用户名**：发布到哪个账号下？
-
-### 第二步：生成 Skill 骨架
-
-在工作目录下创建以下文件结构（**扁平结构，不要嵌套**）：
-
-```
-<skill-name>/
-├── SKILL.md                          # Skill 说明（跨平台通用）
-├── skill.json                        # 机器可读配置
-├── scripts/                          # 脚本目录（可选）
-│   └── main.py                       # 主脚本（可选）
-├── .codebuddy-plugin/
-│   └── marketplace.json              # CodeBuddy 插件市场清单
-├── README.md                         # 完整教程（含各 IDE 安装说明）
-├── LICENSE                           # MIT 许可证
-└── .gitignore
-```
-
-#### SKILL.md 模板
-
-```yaml
----
-name: <skill-name>
-description: "<功能描述>"
-version: "1.0.0"
-author: "<作者>"
-created: "<日期>"
-updated: "<日期>"
-alwaysApply: false
-keywords:
-  - <关键词1>
-  - <关键词2>
-  - ...
----
-
-# <Skill 标题>
-
-## 功能说明
-<功能描述表格>
-
-## 触发场景
-<用户可能说的话 → 执行操作表格>
-
-## 工作流
-<使用步骤>
-```
-
-#### skill.json 模板
-
-```json
-{
-  "name": "<skill-name>",
-  "display_name": "<显示名>",
-  "description": "<描述>",
-  "version": "1.0.0",
-  "author": "<作者>",
-  "license": "MIT",
-  "repository": "https://github.com/<username>/<skill-name>",
-  "category": "<分类>",
-  "keywords": ["<关键词>"]
-}
-```
-
-#### marketplace.json 模板
-
-```json
-{
-  "name": "<skill-name>-marketplace",
-  "description": "<描述>",
-  "owner": { "name": "<作者>" },
-  "plugins": [
-    {
-      "name": "<skill-name>",
-      "description": "<描述>",
-      "source": ".",
-      "version": "1.0.0",
-      "author": { "name": "<作者>" },
-      "license": "MIT",
-      "category": "<分类>",
-      "keywords": ["<关键词>"]
-    }
-  ]
-}
-```
-
-#### README.md 必须包含
-
-1. 项目简介
-2. 安装说明（含各 IDE 路径表）
-3. "最简单方式"（告诉 AI 助手仓库地址）
-4. 使用方法
-5. 项目结构
-6. 许可证
-
-各 IDE 的 Skill 目录：
-
-| IDE | Skill 目录 |
-|-----|-----------|
-| CodeBuddy | `.codebuddy/skills/<skill-name>/` |
-| Claude Code | `.claude/skills/<skill-name>/` |
-| Cursor | `.cursor/skills/<skill-name>/` |
-| Windsurf | `.windsurf/skills/<skill-name>/` |
-| Cline | `.cline/skills/<skill-name>/` |
-| 通用 | `.agents/skills/<skill-name>/` |
-
-### 第三步：发布到 GitHub
-
-> ⚠️ **确认 GitHub 认证**：需要用户已通过 `gh auth login` 登录，或提供 Token。
+### 2. 生成骨架
 
 ```bash
-cd <skill-name>
-git init
+python <本 skill 目录>/scripts/create_skill.py \
+  --name <名称> --description "<触发场景>" \
+  --author "<作者>" --github-user <GitHub 账号> --keywords "<关键词1>,<关键词2>"
+```
+
+在当前目录生成 `<名称>/`：`SKILL.md`、`install.md`、`README.md`、`skill.json`、`.codebuddy-plugin/marketplace.json`、`scripts/`、`LICENSE`、`.gitignore`。已有文件不会被覆盖（加 `--force` 才会）。名称不合规或描述太长时，脚本会直接报错。
+
+### 3. 补全内容
+
+- 按第 1 步收集的信息填写 `SKILL.md` 的"When to use / Workflow / Limits"，删掉注释。
+- 需要脚本就放进 `scripts/`，并在 SKILL.md 里写清什么时候、怎么调用。
+- README 写清用法示例。
+- 本地自测：复制到 `~/.claude/skills/<名称>/`（或用户所用工具的 skills 目录），新开会话，用一句相关请求和一句无关请求各测一次。
+
+### 4. 发布到 GitHub
+
+先确认用户已执行过 `gh auth login`。推送前全文搜索密钥（API Key、Token、`.env`），发现就停下来告诉用户。
+
+```bash
+cd <名称>
+git init -b main
 git add -A
-git commit -m "Initial release: <skill-name> v1.0.0"
-gh repo create <skill-name> --public --description "<描述>" --source . --push
+git commit -m "Initial release: <名称> v1.0.0"
+gh repo create <GitHub 账号>/<名称> --public --description "<一句话简介>" --source . --push
+git tag v1.0.0 && git push --tags
 ```
 
-如果 gh repo create 失败（Token 权限不足），用 API 方式：
-```bash
-gh api -X POST /user/repos -f name="<skill-name>" -f description="<描述>" -f private=false
-git remote add origin https://github.com/<username>/<skill-name>.git
-git push -u origin master
-```
+默认分支必须是 `main`，否则 `install.md` 里的链接会失效。
 
-### 第四步：发布后验证
+### 5. 验证
 
 ```bash
-# clone 验证
-git clone https://github.com/<username>/<skill-name>.git /tmp/verify
-# 检查文件完整性
-find /tmp/verify -not -path '*/.git/*' -type f | sort
-# 检查硬编码路径（不应有绝对路径）
-grep -rn "绝对路径检测" /tmp/verify/SKILL.md
-# 检查一致性
-# 仓库名 = SKILL.md name = skill.json name
-# 版本号一致
+git clone --depth 1 https://github.com/<GitHub 账号>/<名称>.git /tmp/verify-<名称>
+python <本 skill 目录>/scripts/create_skill.py --help >/dev/null   # 脚本仍可用
+grep -rnE '/Users/|/home/[a-z]|[A-Z]:\\' /tmp/verify-<名称> --exclude-dir=.git   # 不应有本机绝对路径
 ```
 
----
+再检查三处名称一致：仓库名 = SKILL.md 的 `name` = skill.json 的 `name`；并在浏览器里打开 `https://raw.githubusercontent.com/<GitHub 账号>/<名称>/main/install.md`，确认能访问。最后把一句话安装指令发给用户。
 
-## 重要注意事项
+## 边界与注意
 
-1. **扁平目录结构**：SKILL.md 和 scripts/ 放在仓库根目录，不要嵌套到 plugins/ 下
-2. **无硬编码路径**：所有路径用相对路径（如 `scripts/xxx.py`），不要用系统绝对路径
-3. **双向兼容**：skill.json 和 marketplace.json 都要有，分别给通用智能体和 CodeBuddy 用
-4. **keywords 必填**：SKILL.md frontmatter 必须有 keywords 列表，提高触发命中率
-5. **alwaysApply: false**：按需触发，不常驻
-6. **MIT 许可证**：默认使用 MIT
-7. **README 含 IDE 路径表**：让用户一眼知道装到哪
+- 未经用户确认，不创建公开仓库、不推送。
+- 只把元数据（作者、版本、关键词）写在 `metadata` 下；frontmatter 顶层只用 `name`、`description`、`license` 等标准字段。
+- token 需要 repo 权限。`gh repo create` 失败时，告诉用户原因，不要自己换其他凭据重试。
+- 目前只支持 GitHub。
 
----
+## 文件
 
-## 已知限制
-
-| 限制 | 说明 |
-|------|------|
-| GitHub 认证 | 需要用户提前 `gh auth login` 或提供 Token |
-| 仓库创建权限 | Token 需要有 repo 权限（Classic Token，不是 Fine-grained） |
-| 仅支持 GitHub | 暂不支持 Gitee 等其他平台 |
+| 文件 | 用途 |
+| --- | --- |
+| `scripts/create_skill.py` | 骨架生成器 |
+| `install.md` | 本 skill 自己的安装说明 |
