@@ -2,20 +2,26 @@
   "name": "skill-creator-publish-marketplace",
   "description": "Skill 创建与发布工具 插件市场",
   "owner": {
-    "name": "WorkBuddy"
+    "name": "Liangchao Deng"
   },
   "plugins": [
     {
       "name": "skill-creator-publish",
-      "description": "快速创建标准 AI Skill 并发布到 GitHub。根据需求生成 SKILL.md + skill.json + scripts + marketplace.json + README，通过 gh CLI 发布。",
+      "description": "快速创建标准 AI Skill 并发布到 GitHub。根据需求生成 SKILL.md、install.md、README、skill.json、marketplace.json，通过 gh CLI 发布。",
       "source": ".",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
-        "name": "WorkBuddy"
+        "name": "Liangchao Deng"
       },
       "license": "MIT",
       "category": "developer-tools",
-      "keywords": ["skill", "creator", "publish", "github", "template"]
+      "keywords": [
+        "skill",
+        "creator",
+        "publish",
+        "github",
+        "template"
+      ]
     }
   ]
 }

@@ -1,138 +1,71 @@
-# Skill Creator & Publisher
+# skill-creator-publish
 
-> 快速创建标准 AI Skill 并发布到 GitHub。根据需求自动生成完整目录结构，一键推送仓库。
->
-> 支持 CodeBuddy、Claude Code、Cursor、Cline、Windsurf 等主流 AI 编程智能体。
+English | [中文](README.zh-CN.md)
 
-## ✨ 功能特性
+An Agent Skill that turns "I want a skill that does X" into a GitHub repository anyone can install with one sentence. It asks for the missing details, generates the skeleton (SKILL.md, install.md, README, skill.json, a CodeBuddy marketplace file, LICENSE), creates the repository with GitHub CLI, and checks the published result.
 
-| 功能 | 说明 |
-|------|------|
-| 🏗️ **创建 Skill 骨架** | 自动生成 SKILL.md + skill.json + scripts/ + marketplace.json + README + LICENSE |
-| 📤 **发布到 GitHub** | 用 gh CLI 创建仓库、提交代码、推送 |
-| ✅ **发布后验证** | clone 验证文件完整性、检查硬编码路径、检查一致性 |
-| 🔄 **跨平台兼容** | 扁平目录结构，所有智能体 clone 后直接可用 |
-| 📋 **标准模板** | 内含 SKILL.md/skill.json/marketplace.json/README 标准模板 |
+I use it to publish my own skills (pptx-zh2en, research-integrity-review and others), so every repository ends up with the same layout and a working `install.md`.
 
-## 📦 安装
+## Install
 
-### 通用前置依赖
+Tell your assistant:
 
-```bash
-# 需要 GitHub CLI
-gh auth login
+```text
+Install skill-creator-publish following https://raw.githubusercontent.com/smiler488/skill-creator-publish/main/install.md
 ```
 
-### 最简单的方式：告诉你的 AI 助手
-
-> 帮我安装 Skill 创建与发布工具，仓库地址：https://github.com/smiler488/skill-creator-publish
-
-### 手动安装
-
-将本仓库克隆到你项目下的 Skill 目录，不同 IDE 对应的路径：
-
-| IDE | Skill 目录 |
-|-----|-----------|
-| CodeBuddy | `.codebuddy/skills/skill-creator-publish/` |
-| Claude Code | `.claude/skills/skill-creator-publish/` |
-| Cursor | `.cursor/skills/skill-creator-publish/` |
-| Windsurf | `.windsurf/skills/skill-creator-publish/` |
-| Cline | `.cline/skills/skill-creator-publish/` |
-| 通用 | `.agents/skills/skill-creator-publish/` |
+Or by hand (Claude Code shown; see `install.md` for other tools):
 
 ```bash
-git clone https://github.com/smiler488/skill-creator-publish.git .cursor/skills/skill-creator-publish
+git clone --depth 1 https://github.com/smiler488/skill-creator-publish.git ~/.claude/skills/skill-creator-publish
 ```
 
-只要目录下有 `SKILL.md`，Agent 下次启动就会自动加载这个 Skill。
+Publishing needs [GitHub CLI](https://cli.github.com) and `gh auth login`.
 
-### CodeBuddy 插件市场安装
+CodeBuddy marketplace:
 
-```bash
+```text
 /plugin marketplace add smiler488/skill-creator-publish
 /plugin install skill-creator-publish@skill-creator-publish-marketplace
 ```
 
-### 独立使用
+## Use
+
+Ask in plain words, e.g. "create a skill that merges PDF files and publish it to my GitHub". Nothing is pushed before you confirm.
+
+The generator also works on its own:
 
 ```bash
-# 生成 skill 骨架
-python scripts/create_skill.py --name my-skill --description "功能描述" --author "作者" --keywords "关键词1,关键词2"
+python scripts/create_skill.py --name pdf-merger \
+  --description "Merge PDF files. Use when the user asks to combine PDFs." \
+  --author "Your Name" --github-user yourname --keywords "pdf,merge"
 ```
 
-## 🚀 使用方法
+It checks the name (lowercase, digits, hyphens) and the 1024-character description limit, and never overwrites existing files unless you pass `--force`.
 
-### 方式一：通过 AI 助手（推荐）
-
-对 AI 助手说："帮我创建一个 skill，功能是 XXX" 或 "帮我创建并发布一个 skill 到 GitHub"。
-
-AI 助手会：
-1. 确认 skill 名称、描述、关键词
-2. 生成完整目录结构
-3. 创建 GitHub 仓库并推送
-4. 验证发布结果
-
-### 方式二：命令行独立使用
-
-```bash
-# Step 1: 生成 skill 骨架
-python scripts/create_skill.py \
-  --name my-skill \
-  --description "我的技能描述" \
-  --author "我的名字" \
-  --keywords "关键词1,关键词2,关键词3"
-
-# Step 2: 编辑生成的 SKILL.md 补充工作流
-# Step 3: 在 scripts/ 下添加脚本
-# Step 4: 替换 README.md 中的 <username>
-
-# Step 5: 发布到 GitHub
-cd my-skill
-git init
-git add -A
-git commit -m "Initial release: my-skill v1.0.0"
-gh repo create my-skill --public --description "我的技能描述" --source . --push
-```
-
-## 📁 项目结构
+## Generated layout
 
 ```
-skill-creator-publish/
-├── SKILL.md                          # Skill 说明文件（跨平台通用）
-├── skill.json                        # 机器可读配置
-├── scripts/
-│   └── create_skill.py               # Skill 骨架生成器
-├── .codebuddy-plugin/
-│   └── marketplace.json              # CodeBuddy 插件市场清单
+pdf-merger/
+├── SKILL.md                        name / description / license; author, version, keywords under metadata
+├── install.md                      install instructions written for AI assistants
 ├── README.md
-├── LICENSE
+├── skill.json
+├── .codebuddy-plugin/marketplace.json
+├── scripts/
+├── LICENSE                         MIT
 └── .gitignore
 ```
 
-## 📋 生成的 Skill 标准结构
+## Changes in this revision
 
-使用本工具创建的 skill 会包含以下文件：
+- Generated SKILL.md files put `version`, `author`, `keywords` and `alwaysApply` at the top level of the frontmatter, which the Agent Skills format does not define. They are now under `metadata`.
+- Descriptions with quotes broke the YAML. Values are now quoted safely.
+- Every new skill gets an `install.md`, so it can be installed with one sentence.
+- Name and description are validated, and existing files are kept unless `--force` is given.
+- The default author is your git user name instead of a tool name. Instructions push to `main`, which the raw install links rely on.
+- The post-publish path check was a placeholder that matched nothing. It now looks for `/Users/`, `/home/…` and `C:\` paths.
 
-| 文件 | 作用 | 说明 |
-|------|------|------|
-| `SKILL.md` | 跨平台 Skill 说明 | 所有智能体通过 YAML frontmatter 识别 |
-| `skill.json` | 机器可读配置 | 名称、版本、关键词 |
-| `scripts/` | 脚本目录 | Python 脚本（可选） |
-| `.codebuddy-plugin/marketplace.json` | CodeBuddy 插件市场 | 支持 `/plugin install` |
-| `README.md` | 项目说明 | 含各 IDE 安装路径表 |
-| `LICENSE` | MIT 许可证 | 开源协议 |
-| `.gitignore` | Git 忽略 | 排除缓存文件 |
+## License
 
-## ⚠️ 注意事项
-
-| 事项 | 说明 |
-|------|------|
-| GitHub 认证 | 需要提前 `gh auth login` 或提供 Token |
-| Token 权限 | 需要 Classic Token（有 repo 权限），Fine-grained 可能无法创建仓库 |
-| 扁平目录 | SKILL.md 放仓库根目录，不要嵌套到 plugins/ 下 |
-| 无硬编码路径 | 所有路径用相对路径（`scripts/xxx.py`） |
-| keywords 必填 | SKILL.md frontmatter 必须有 keywords 列表 |
-
-## 📄 许可证
-
-MIT License — 详见 [LICENSE](LICENSE)
+MIT, see [LICENSE](LICENSE). Liangchao Deng (邓良超).
