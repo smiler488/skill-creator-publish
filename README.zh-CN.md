@@ -2,6 +2,7 @@
 
 [English](README.md) | 中文
 
+[![CI](https://github.com/smiler488/skill-creator-publish/actions/workflows/validate.yml/badge.svg)](https://github.com/smiler488/skill-creator-publish/actions/workflows/validate.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) ![Agent Skill](https://img.shields.io/badge/Agent_Skill-informational)
 一个 Agent Skill：把"我想要一个能做 X 的 skill"变成一个任何人一句话就能安装的 GitHub 仓库。它会：
 
 - 先问清缺少的信息；

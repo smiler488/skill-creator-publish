@@ -2,6 +2,7 @@
 
 English | [中文](README.zh-CN.md)
 
+[![CI](https://github.com/smiler488/skill-creator-publish/actions/workflows/validate.yml/badge.svg)](https://github.com/smiler488/skill-creator-publish/actions/workflows/validate.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) ![Agent Skill](https://img.shields.io/badge/Agent_Skill-informational)
 An Agent Skill that turns "I want a skill that does X" into a GitHub repository anyone can install with one sentence. It asks for the missing details, generates the skeleton (SKILL.md, install.md, README, skill.json, a CodeBuddy marketplace file, LICENSE), creates the repository with GitHub CLI, and checks the published result.
 
 ## Install
