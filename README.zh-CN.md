@@ -9,8 +9,6 @@
 - 用 GitHub CLI 创建仓库；
 - 检查发布结果。
 
-我自己的 skill（pptx-zh2en、research-integrity-review 等）都是用它发布的，所以每个仓库的结构一致，也都带有能用的 `install.md`。
-
 ## 安装
 
 对 AI 助手说：

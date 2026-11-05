@@ -4,8 +4,6 @@ English | [中文](README.zh-CN.md)
 
 An Agent Skill that turns "I want a skill that does X" into a GitHub repository anyone can install with one sentence. It asks for the missing details, generates the skeleton (SKILL.md, install.md, README, skill.json, a CodeBuddy marketplace file, LICENSE), creates the repository with GitHub CLI, and checks the published result.
 
-I use it to publish my own skills (pptx-zh2en, research-integrity-review and others), so every repository ends up with the same layout and a working `install.md`.
-
 ## Install
 
 Tell your assistant:
